@@ -1,29 +1,34 @@
 # Robot Learning
 
-Exercises in flow matching, diffusion, and reinforcement learning — combining materials from two courses:
+How do you teach a robot to act? Start by learning how to transform simple distributions into complex ones (flow matching), then apply that machinery to learn behaviors — first from demonstrations, then from reward signals (reinforcement learning).
 
-- **[MIT 6.S184/6.S975](https://diffusion.csail.mit.edu)** — Introduction to flow matching and diffusion models ([labs repo](https://github.com/eje24/iap-diffusion-labs), 01–03)
-- **[UC Berkeley CS 285](https://github.com/berkeleydeeprlcourse/homework_spring2026)** — Deep reinforcement learning, Spring 2026 (exercises 04–08, projects 09–10)
+Materials drawn from two courses:
 
-The intended learning path: finish the flow matching and diffusion exercises first, then move on to reinforcement learning.
+- [MIT 6.S184/6.S975](https://diffusion.csail.mit.edu) — Introduction to flow matching and diffusion models ([labs](https://github.com/eje24/iap-diffusion-labs))
+- [UC Berkeley CS 285](https://github.com/berkeleydeeprlcourse/homework_spring2026) — Deep reinforcement learning, Spring 2026
 
-## Contents
+Exercise 04 bridges the two: it uses the flow matching from 01–03 to learn robot action distributions from demonstrations.
 
-| # | Directory | Topic | Source |
-|---|-----------|-------|--------|
-| 01 | `01-odes-and-sdes/` | Simulating ODEs and SDEs | MIT |
-| 02 | `02-flow-and-score-matching/` | Flow matching and score matching | MIT |
-| 03 | `03-conditional-image-generation/` | Conditional generation with CFG and diffusion transformers | MIT |
-| 04 | `04-imitation-learning/` | Imitation learning (behavioral cloning, flow matching policy) | Berkeley |
-| 05 | `05-policy-gradients/` | REINFORCE and policy gradient methods | Berkeley |
-| 06 | `06-q-learning-and-actor-critic/` | DQN and Soft Actor-Critic | Berkeley |
-| 07 | `07-llm-rl/` | RL for LLMs (GRPO, REINFORCE) | Berkeley |
-| 08 | `08-offline-rl/` | Offline RL | Berkeley |
-| 09 | `09-llm-rl-project/` | Final project: RLHF for instruction following | Berkeley |
-| 10 | `10-offline-to-online-rl-project/` | Final project: offline-to-online RL | Berkeley |
+| # | Directory | What you build |
+|---|-----------|----------------|
+| 01 | `01-odes-and-sdes/` | Simulate ODEs and SDEs; implement Euler and Euler-Maruyama integrators; run Langevin dynamics to sample from target distributions |
+| 02 | `02-flow-and-score-matching/` | Train neural networks to learn vector fields that transform distributions using conditional flow matching and score matching |
+| 03 | `03-conditional-image-generation/` | Generate MNIST digits with a diffusion transformer; implement classifier-free guidance for conditional generation |
+| 04 | `04-imitation-learning/` | Build a flow matching policy for Push-T robot manipulation; compare against behavioral cloning |
+| 05 | `05-policy-gradients/` | Implement REINFORCE with baselines and GAE on CartPole; move from imitating demonstrations to maximizing reward |
+| 06 | `06-q-learning-and-actor-critic/` | Implement DQN for Atari (MsPacman) and Soft Actor-Critic for continuous control (HalfCheetah, Hopper) |
+| 07 | `07-llm-rl/` | Fine-tune LLMs with REINFORCE and GRPO on math and format-copying tasks |
+| 08 | `08-offline-rl/` | Learn robot manipulation policies from fixed datasets without environment interaction (SAC-BC, IQL) |
+| 09 | `09-llm-rl-project/` | Implement RLHF methods (DPO, GRPO, reward modeling) and beat performance thresholds on instruction following |
+| 10 | `10-offline-to-online-rl-project/` | Bridge offline and online RL for robot control; start from demonstrations, then improve with environment interaction |
 
 ## Setup
 
-Each directory has its own README with setup instructions. Most Berkeley exercises use [`uv`](https://github.com/astral-sh/uv) for package management, [Weights & Biases](https://wandb.ai) for experiment tracking, and [Modal](https://modal.com) for cloud GPU compute. See `04-imitation-learning/README.md` for initial environment setup.
+Every directory has its own `pyproject.toml` and uses [`uv`](https://github.com/astral-sh/uv) for environment management. To get started:
 
-The MIT flow matching labs are Jupyter notebooks — no additional setup beyond a Python environment with PyTorch.
+```bash
+cd 01-odes-and-sdes
+uv run jupyter notebook odes-and-sdes.ipynb
+```
+
+Berkeley exercises (04–10) also use [Weights & Biases](https://wandb.ai) for logging and [Modal](https://modal.com) for cloud GPU — see `04-imitation-learning/README.md` for first-time setup.
