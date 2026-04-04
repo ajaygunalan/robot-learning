@@ -2,11 +2,11 @@
 
 ## Setup
 
-For general setup and Modal instructions, see Homework 1's README.
+For general setup and Modal instructions, see `04-imitation-learning/README.md`.
 
 ## Examples
 
-Here are some example commands. Run them in the `final_project_offline_online` directory.
+Here are some example commands. Run them in the `10-offline-to-online-rl-project` directory.
 
 * To run on a local machine:
   ```bash

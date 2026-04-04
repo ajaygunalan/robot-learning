@@ -2,11 +2,11 @@
 
 ## Setup
 
-For general setup and Modal instructions, see Homework 1's README.
+For general setup and Modal instructions, see `04-imitation-learning/README.md`.
 
 ## Examples
 
-Here are some example commands. Run them in the `hw2` directory.
+Here are some example commands. Run them in the `05-policy-gradients` directory.
 
 * To run on a local machine:
   ```bash

@@ -2,11 +2,11 @@
 
 ## Setup
 
-For general setup and Modal instructions, see Homework 1's README.
+For general setup and Modal instructions, see `04-imitation-learning/README.md`.
 
 ## Examples
 
-Here are some example commands. Run them in the `hw5` directory.
+Here are some example commands. Run them in the `08-offline-rl` directory.
 
 * To run on a local machine:
   ```bash
