@@ -20,7 +20,7 @@ from hw1_imitation.data import (
     load_pusht_zarr,
 )
 from hw1_imitation.model import build_policy, PolicyType
-from hw1_imitation.evaluation import Logger
+from hw1_imitation.evaluation import Logger, evaluate_policy
 
 LOGDIR_PREFIX = "exp"
 
@@ -127,7 +127,41 @@ def run_training(config: TrainConfig) -> None:
     )
     logger = Logger(log_dir)
 
-    ### TODO: PUT YOUR MAIN TRAINING LOOP HERE ###
+    # ╔═══════════════════ STEP 4 — TRAINING LOOP ═══════════════════╗  ✅ done
+    # WHAT: optimizer + loop over the data that trains the policy.
+    # WHY : learning lives here, not in the model — same loop trains MSE & flow.
+    # line 1: the optimizer — Adam over all the model's weights
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=config.lr, weight_decay=config.weight_decay
+    )
+    # line 2: iterate — count steps, loop epochs, loop batches, move data to device
+    step = 0
+    for epoch in range(config.num_epochs):
+        for state, action_chunk in loader:
+            state = state.to(device)
+            action_chunk = action_chunk.to(device)
+            # line 3: run + learn — measure error, then nudge weights downhill
+            loss = model.compute_loss(state, action_chunk)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            # line 4: bookkeeping — count the step, log loss, periodically evaluate
+            step += 1
+            if step % config.log_interval == 0:
+                logger.log({"train/loss": loss.item()}, step=step)
+            if step % config.eval_interval == 0:
+                evaluate_policy(
+                    model,
+                    normalizer,
+                    device,
+                    chunk_size=config.chunk_size,
+                    video_size=config.video_size,
+                    num_video_episodes=config.num_video_episodes,
+                    flow_num_steps=config.flow_num_steps,
+                    step=step,
+                    logger=logger,
+                )
+    # ╚═══════════════════ STEP 4 — END ═════════════════════╝
 
     logger.dump_for_grading()
 

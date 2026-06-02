@@ -37,6 +37,28 @@ uv run jupyter notebook odes-and-sdes.ipynb
 
 Berkeley exercises (04–10) use [Weights & Biases](https://wandb.ai) for logging and [Modal](https://modal.com) for optional cloud GPU — see `04-imitation-learning/README.md` for first-time setup. WandB is already authenticated via `~/.netrc` (machine `api.wandb.ai`).
 
+## Running a lab (exFAT gotcha — read first)
+
+`uv run` **fails** in-repo: it tries to symlink `.venv/` onto exFAT → `Operation not permitted`. Fix: point uv at the ext4 venv. Run **from the lab dir**:
+
+```bash
+UV_PROJECT_ENVIRONMENT=~/.venvs/robot-learning/<lab>/ \
+  uv run src/<pkg>/train.py [flags]
+```
+
+Example (lab 04 MSE):
+```bash
+cd 04-imitation-learning
+UV_PROJECT_ENVIRONMENT=~/.venvs/robot-learning/04-imitation-learning \
+  uv run src/hw1_imitation/train.py --policy-type mse
+```
+
+- **WandB is online** (`wandb login` already done). The first **~3 min after `Using device: cuda` is silent** — imports + CUDA init off the exFAT/gdrive mount, **not a hang**. Don't kill it.
+- Dataset auto-downloads to `data/` (31 MB); pass `--data-dir ~/.cache/robot-learning-data` to reuse the cached copy.
+- Stop criterion: runs all epochs (no early-stop). Reward target is a **grading bar, not a stop trigger** — Ctrl+C once reward clears it if impatient.
+- Plotting: `matplotlib` isn't in the venvs — add with `uv pip install --python ~/.venvs/robot-learning/<lab>/bin/python matplotlib`.
+- **`log.csv` bug:** `Logger` freezes its header on the first `log()` call (loss only), so `eval/mean_reward` is dropped from the CSV — pull reward from the **WandB run history** (`wandb.Api().run(...).history(...)`) for plots.
+
 ## Local hardware
 
 - CPU: i9-13980HX (24c/32t), 30 GB RAM
@@ -67,3 +89,30 @@ Verified by reading the code. Classic-RL labs are CPU-bound (env stepping); the 
 ## Exercise mode
 
 Stubs (`raise NotImplementedError`, `TODO`) are the learner's to write — guide, don't hand over the answer.
+
+### STEP workflow (use for every homework)
+
+**Setup — number all blanks in DO-ORDER.** Scan every file the homework asks you to fill. Mark each blank with a banner, numbered in the order they're *done* (not file position):
+
+```python
+# ╔═══════════════════ STEP N — START ═══════════════════╗
+# WHAT: <one line — what this block produces>
+# WHY : <one line — why it exists / where it fits>
+# >>> write STEP N here <<<
+# ╚═══════════════════ STEP N — END ═════════════════════╝
+```
+
+Banners stay **high-level: WHAT + WHY only, no code, no recipe, no formulas, no shapes.** All the detail — pseudocode, tensor shapes, line-by-line — lives in chat, not the comment. The banner just marks the spot and its purpose.
+
+Then give the learner the STEP table: `STEP | file | spot | status`. If numbers ever drift from do-order, renumber so label == order.
+
+**Going step → step:** finish a STEP fully, mark it `✅`, then point to the next number. Do dependency-driven order (e.g. define a policy → write its runner → run it → next policy), not file order.
+
+**Within a STEP — context first, then line by line:**
+1. **Context** — where this STEP sits in the overall script, and **what / why / how** before any code.
+2. **One line at a time** — add a single line, explain what it does + the shape it produces, then **stop and wait** for the learner to say `ok`.
+3. Repeat until the STEP is complete; remove the `raise` on the last line.
+
+**Validate when asked / when unsure** — confirm an idiom against Context7 + real codebases (GitHub) before trusting it; report the match.
+
+Each homework: number once, walk 1→N, context-then-line-by-line inside each. Everything stays easy and ordered.
