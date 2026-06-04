@@ -3,6 +3,8 @@
 > **Always answer concisely and briefly.**
 > **Always explain top-down: high level first, then drill to low level, step by step.**
 
+> **📍 Progress (resume here):** **hw1 COMPLETE.** Part 2 (MSE) reward 0.636 ≥ 0.5; Part 3 (flow) reward **0.845 ≥ 0.7** (WandB run `bgjbk97s`). Deliverables built in `04-imitation-learning/`: `report/hw1_report.pdf` (Gradescope "HW1 Report") + `submit.zip` (Gradescope "HW1 Code", exp/{mse,flow} + src + configs). Plots + `report/{flow_report,hw1_report}.md`, `report/{flow_loss,flow_reward,mse_vs_flow_reward,mse_vs_flow_rollout}.png` all generated. **Next: hw2 = `05-policy-gradients/` (REINFORCE + GAE on CartPole).**
+
 
 How do you teach a robot to act? Start by learning how to transform simple distributions into complex ones (flow matching), then apply that machinery to learn behaviors — first from demonstrations, then from reward signals (reinforcement learning).
 
@@ -51,6 +53,11 @@ Example (lab 04 MSE):
 cd 04-imitation-learning
 UV_PROJECT_ENVIRONMENT=~/.venvs/robot-learning/04-imitation-learning \
   uv run src/hw1_imitation/train.py --policy-type mse
+```
+
+**Shortcut: `rl <N> <args…>`** (in `~/.bashrc`). Runs a lab from *anywhere* — no `cd`, no prefix. Takes the lab number (1–10), globs the dir, sets `UV_PROJECT_ENVIRONMENT` to the matching ext4 venv, and runs in a subshell (your shell stays put). Uses `builtin cd` to bypass zoxide. Example:
+```bash
+rl 4 src/hw1_imitation/train.py --policy-type flow
 ```
 
 - **WandB is online** (`wandb login` already done). The first **~3 min after `Using device: cuda` is silent** — imports + CUDA init off the exFAT/gdrive mount, **not a hang**. Don't kill it.
